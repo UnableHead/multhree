@@ -1,16 +1,15 @@
 import React, {Component} from "react";
-import "./CSS/style.css";
-import icon from "../Asset/icon.jpg";
-import Label from "./Label";
+import Header from "./Component/Header";
+import CanvasView from "./Component/CanvasView";
+import "./App.css";
 
 class App extends Component{
 
     render(){
         return (
             <div className="App">
-                <Label/>
-                <button onClick={() => console.log("Matthias")}> Button </button>
-                <img src={icon}/>
+                <Header/>
+                <CanvasView/>
             </div>
         );
     }
