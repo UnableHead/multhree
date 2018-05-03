@@ -12,7 +12,7 @@ try{
     console.warn("File '" + filePath + "' does not exist. No custom config will be applied");
 }
 
-module.exports = merge(common, {
+module.exports = merge.smart(common, {
     devServer: {
         contentBase: path.resolve(__dirname, "dist"),
         hot: true,
