@@ -13,3 +13,7 @@
 # misc
 package-lock.json
 
+
+#custom file
+*.custom.js
+
