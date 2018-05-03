@@ -1,0 +1,154 @@
+/**
+ * Ce fichier contient la configuration pour ESLint
+ * https://eslint.org/docs/rules/
+ * Toutes les règles appliquées dans le projet sont définies ici
+ */
+
+{
+  // Définition de l'environement applicatif
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true,
+    "commonjs": true
+  },
+
+  // Définition des standards
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    }
+  },
+
+  // Importation des plugins
+  "plugins": [
+    "react"
+  ],
+
+  // Ajout de lot de règle
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
+
+  // Ajout de règle spécifiques
+  "rules": {
+    "no-console": 0, // ["error", {"allow": ["warn", "error"]}],
+
+    // Règles suplémentaires trié par catégories :
+
+    // Possible Errors
+    "for-direction": "error",
+    "getter-return": "error",
+    "no-await-in-loop": "error",
+    "no-template-curly-in-string": "error",
+    "valid-jsdoc": "error",
+
+    // Best Practices
+    "array-callback-return": "error",
+    "block-scoped-var": "error",
+    "curly": "error",
+    "dot-location": ["error", "property"],
+    "eqeqeq": ["error", "always"],
+    "no-alert": "error",
+    "no-caller": "error",
+    "no-eq-null": "error",
+    "no-eval": "error",
+    "no-extra-bind": "error",
+    "no-floating-decimal": "error",
+    "no-invalid-this": "error",
+    "no-loop-func": "error",
+    "no-magic-numbers": ["error", {"ignore": [0, 1, -1]}],
+    "no-multi-spaces": ["error", {"ignoreEOLComments": true}],
+    "no-self-compare": "error",
+    "no-sequences": "error",
+    "no-unused-expressions": "error",
+    "no-useless-call": "error",
+    "no-useless-concat": "error",
+    "no-useless-return": "error",
+
+    // Node.js and CommonJS
+    "callback-return": "error",
+
+    // Stylistic Issues
+    "array-bracket-newline": ["error", "consistent"],
+    "array-bracket-spacing": "error",
+    "block-spacing": ["error", "never"],
+    "brace-style": ["error", "1tbs"],
+    "camelcase": "error",
+    "comma-dangle": ["error", "never"],
+    "comma-spacing": "error",
+    "comma-style": "error",
+    "computed-property-spacing": "error",
+    "func-call-spacing": "error",
+    "func-name-matching": "error",
+    "function-paren-newline": "error",
+    "implicit-arrow-linebreak": "error",
+    "indent": [
+      "error", 4, {
+        "SwitchCase": 1,
+        "VariableDeclarator": {"var": 2, "let": 2, "const": 3},
+        "FunctionDeclaration": {"parameters": "first"},
+        "ArrayExpression": "first",
+        "ObjectExpression": "first",
+        "ImportDeclaration": "first",
+        "flatTernaryExpressions": true
+      }
+    ],
+    "jsx-quotes": "error",
+    "key-spacing": "error",
+    "lines-between-class-members": ["error", "always"],
+    "max-len": ["error", {"code": 200, "ignoreComments": true}],
+    "new-cap": ["error", {"capIsNew": false}],
+    "new-parens": "error",
+    "newline-per-chained-call": ["error", {"ignoreChainWithDepth": 3}],
+    "no-array-constructor": "error",
+    "no-tabs": "error",
+    "no-bitwise": "error", // Cette règle peut être désactivé si besoin
+    "no-new-object": "error",
+    "no-trailing-spaces": "error",
+    "no-unneeded-ternary": "error",
+    "no-whitespace-before-property": "error",
+    "object-curly-spacing": ["error", "never"],
+    "operator-linebreak": ["error", "before", { "overrides": {"?": "ignore", ":": "ignore"}}],
+    "padded-blocks": ["error", {"blocks": "never"}],
+    "quote-props": ["error", "consistent"],
+    "quotes": ["error", "double"],
+    //"require-jsdoc": [  // ToDo: Règle à ajouter
+    //  "error", {
+    //    "require": {
+    //      "FunctionDeclaration": true,
+    //      "MethodDefinition": true,
+    //      "ClassDeclaration": true,
+    //      "ArrowFunctionExpression": true,
+    //      "FunctionExpression": true
+    //    }
+    //  }
+    //],
+    "semi": ["error", "always"],
+    "semi-spacing": "error",
+    "space-before-blocks": ["error", "never"],
+    "space-before-function-paren": ["error", "never"],
+    "space-in-parens": "error",
+    "space-infix-ops": "error",
+    "space-unary-ops": "error",
+    "spaced-comment": ["error", "always", { "exceptions": ["-", "+", "*", "/"] }],
+    "switch-colon-spacing": "error",
+    "wrap-regex": "error",
+
+    // ECMAScript 6
+    "arrow-spacing": "error",
+    "no-confusing-arrow": "error",
+    "no-duplicate-imports": "error",
+    "no-var": "error",
+    "prefer-arrow-callback": "error",
+    "prefer-const": "error",
+
+    // Plugins rules
+    "react/jsx-uses-vars": "error"
+
+  }
+}

@@ -1,0 +1,7 @@
+
+# Exclude all except src/ folder
+*
+!src/
+
+# Exclude this extension files
+*.test.js

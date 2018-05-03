@@ -1,0 +1,28 @@
+{
+  "name": "multhree",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test": "",
+    "build": "webpack"
+  },
+  "author": {
+    "name" : "UnableHead",
+    "email" : "matthias.mouchot@gmail.com",
+    "url" : "https://github.com/UnableHead"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "css-loader": "^0.28.11",
+    "eslint": "^4.19.1",
+    "eslint-plugin-react": "^7.7.0",
+    "file-loader": "^1.1.11",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.6.0",
+    "webpack-cli": "^2.1.2"
+  },
+  "dependencies": {
+    "lodash": "^4.17.10"
+  }
+}
