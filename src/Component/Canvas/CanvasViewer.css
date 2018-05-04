@@ -1,0 +1,9 @@
+.App-root-canvas{
+    flex: 1;
+    overflow: hidden;
+}
+
+.App-canvas{
+    width: 100%;
+    height: 100%;
+}
