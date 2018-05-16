@@ -88,7 +88,7 @@
     "function-paren-newline": "error",
     "implicit-arrow-linebreak": "error",
     "indent": [
-      "error", 4, {
+      "error", 2, {
         "SwitchCase": 1,
         "VariableDeclarator": {"var": 2, "let": 2, "const": 3},
         "FunctionDeclaration": {"parameters": "first"},

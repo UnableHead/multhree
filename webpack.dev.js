@@ -7,25 +7,25 @@ const common = require("./webpack.common.js");
 const filePath = "./webpack.custom";
 let customConfig = {};
 try{
-    customConfig = require(filePath);
+  customConfig = require(filePath);
 }catch(e){
-    console.warn("File '" + filePath + "' does not exist. No custom config will be applied");
+  console.warn("File '" + filePath + "' does not exist. No custom config will be applied");
 }
 
 module.exports = merge.smart(common, {
-    devServer: {
-        contentBase: path.resolve(__dirname, "dist"),
-        hot: true,
-        overlay: {
-            warnings: true,
-            errors: true
-        }
-    },
-    plugins: [
-        new webpack.HotModuleReplacementPlugin()
-    ],
-    optimization: {
-        namedModules: true
-    },
-    mode: "development"
+  devServer: {
+    contentBase: path.resolve(__dirname, "dist"),
+    hot: true,
+    overlay: {
+      warnings: true,
+      errors: true
+    }
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin()
+  ],
+  optimization: {
+    namedModules: true
+  },
+  mode: "development"
 }, customConfig);

@@ -3,13 +3,13 @@ import "./Header.css";
 
 class Header extends Component{
 
-    render(){
-        return (
-            <div className="App-header">
+  render(){
+    return (
+      <div className="App-header">
                 Multhree
-            </div>
-        );
-    }
+      </div>
+    );
+  }
 }
 
 export default Header;
