@@ -107,7 +107,7 @@
     "newline-per-chained-call": ["error", {"ignoreChainWithDepth": 3}],
     "no-array-constructor": "error",
     "no-tabs": "error",
-    "no-bitwise": "error", // Cette règle peut être désactivé si besoin
+    // "no-bitwise": "error", // Cette règle peut être désactivé si besoin
     "no-new-object": "error",
     "no-trailing-spaces": "error",
     "no-unneeded-ternary": "error",

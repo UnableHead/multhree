@@ -19,7 +19,6 @@ class CanvasViewer extends Component{
     }
 
     updateGeometry(){
-        console.log("Matthias", this.rootCanvas.offsetWidth, this.rootCanvas.offsetHeight);
         this.canvas.style.width = "";
         this.canvas.style.height = "";
         this.scenesManager.updateGeometry(this.rootCanvas.offsetWidth, this.rootCanvas.offsetHeight);

@@ -37,6 +37,6 @@
   },
   "dependencies": {
     "three": "^0.92.0",
-    "three-trackballcontrols": "0.0.7"
+    "three-dragcontrols": "^0.88.2"
   }
 }

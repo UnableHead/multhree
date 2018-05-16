@@ -1,6 +1,8 @@
 import * as ThreeLib from "three";
-import TrackballControls from "three-trackballcontrols";
+import TrackballControls from "./TrackballControls";
+import DragControls from "three-dragcontrols";
 import fontGabriola from "../../../Asset/Gabriola_Regular.typeface.json";
+import textureGrass from "../../../Asset/texture_grass.jpg";
 
 class SceneManager{
     constructor(canvas){
@@ -21,7 +23,7 @@ class SceneManager{
         this.camera.lookAt(new ThreeLib.Vector3(0, 0, 0));
 
         // Create camera control
-        this.controls = new TrackballControls(this.camera);
+        this.controls = new TrackballControls(this.camera, this.canvas);
         this.controls.rotateSpeed = 1.0;
         this.controls.zoomSpeed = 1.2;
         this.controls.panSpeed = 0.8;
@@ -34,6 +36,7 @@ class SceneManager{
 
         // Add cube
         const geometryCube = new ThreeLib.BoxGeometry(20, 20, 20);
+        geometryCube.computeBoundingBox();
         const materialCube = new ThreeLib.MeshNormalMaterial();
         this.meshCube = new ThreeLib.Mesh(geometryCube, materialCube);
         this.meshCube.position.y = -50;
@@ -69,6 +72,26 @@ class SceneManager{
             meshText.position.x = -0.5 * (geometryText.boundingBox.max.x - geometryText.boundingBox.min.x);
             this.scene.add(meshText);
         }, (e) => console.log("onProgress", e), (e) => console.log("onError", e));
+
+        // Add Floor
+        const loader = new ThreeLib.TextureLoader();
+        loader.load(
+            textureGrass,
+            (texture) => {
+                texture.wrapS = texture.wrapT = ThreeLib.MirroredRepeatWrapping;
+                texture.offset.set(0.5, 0.5);
+                texture.repeat.set(2, 2);
+                const geometryFloor = new ThreeLib.BoxGeometry(10000, 0, 10000);
+                const materialFloor = new ThreeLib.MeshBasicMaterial({map: texture});
+                const meshFloor = new ThreeLib.Mesh(geometryFloor, materialFloor);
+                meshFloor.position.y = -100;
+                this.scene.add(meshFloor);
+            }
+        );
+
+
+        // Add controls
+        new DragControls([this.meshCube], this.camera, this.canvas);
 
 
         this.renderer = new ThreeLib.WebGLRenderer({canvas: this.canvas, antialias: true});
