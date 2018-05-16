@@ -79,7 +79,6 @@ class TrackballControls{
           objectSidewaysDirection = new Vector3(),
           axis = new Vector3(),
           quaternion = new Quaternion();
-    let angle;
 
     moveDirection.set(mouseSphere.x - this.lastMouseSphere.x, mouseSphere.y - this.lastMouseSphere.y, 0);
     this.eye.copy(this.camera.position).sub(this.target);
@@ -88,10 +87,9 @@ class TrackballControls{
     objectSidewaysDirection.crossVectors(objectUpDirection, eyeDirection).normalize();
     objectUpDirection.setLength(moveDirection.y);
     objectSidewaysDirection.setLength(moveDirection.x);
-    moveDirection.copy(objectUpDirection.add(objectSidewaysDirection));
+    moveDirection.copy(objectUpDirection).add(objectSidewaysDirection);
     axis.crossVectors(moveDirection, this.eye).normalize();
-    angle = moveDirection.length();
-    angle *= this.rotateSpeed;
+    const angle = moveDirection.length() * this.rotateSpeed;
     quaternion.setFromAxisAngle(axis, angle);
 
     this.eye.applyQuaternion(quaternion);
@@ -100,11 +98,16 @@ class TrackballControls{
     this.camera.position.addVectors(this.target, this.eye);
     this.camera.lookAt(this.target);
 
+    // Reset camera yaw (rotation on Y axe)
+    eyeDirection.copy(this.eye).normalize();
+    objectUpDirection.copy(this.camera.up).normalize();
+    objectSidewaysDirection.crossVectors(objectUpDirection, eyeDirection);
+    objectSidewaysDirection.y = 0;
+    objectSidewaysDirection.normalize();
+    this.camera.up.crossVectors(eyeDirection, objectSidewaysDirection).normalize();
+    this.camera.up.y = Math.abs(this.camera.up.y);
+
     this.lastMouseSphere.copy(mouseSphere);
-
-    // this.camera.up.set(1, 1 - _.e, 0);
-
-    console.log("Matthias", this.camera.up);
   }
 
   panCamera(e){
