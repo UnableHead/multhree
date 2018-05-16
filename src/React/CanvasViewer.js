@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import SceneManager from "./SceneManager";
+import SceneManager from "../Scene3D/SceneManager";
 import "./CanvasViewer.css";
 
 class CanvasViewer extends Component{

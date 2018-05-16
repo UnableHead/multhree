@@ -1,8 +1,8 @@
 import * as ThreeLib from "three";
-import TrackballControls from "./TrackballControls";
+import TrackballControls from "./Controls/TrackballControls";
 import DragControls from "three-dragcontrols";
-import fontGabriola from "../../../Asset/Gabriola_Regular.typeface.json";
-import textureGrass from "../../../Asset/texture_grass.jpg";
+import fontGabriola from "../../Asset/Gabriola_Regular.typeface.json";
+import textureGrass from "../../Asset/texture_grass.jpg";
 
 class SceneManager{
   constructor(canvas){
