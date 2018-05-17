@@ -27,13 +27,12 @@ class TrackballControls{
     this.lastMouseCoord = new Vector2();
 
     this.handleResize = this.handleResize.bind(this);
-    this.handleContextmenu = this.handleContextmenu.bind(this);
     this.handleMousedown = this.handleMousedown.bind(this);
     this.handleMousemove = this.handleMousemove.bind(this);
     window.addEventListener("resize", this.handleResize);
     this.domElement.addEventListener("mousedown", this.handleMousedown);
     this.domElement.addEventListener("mousemove", this.handleMousemove);
-    this.domElement.addEventListener("contextmenu", this.handleContextmenu);
+    this.domElement.addEventListener("contextmenu", TrackballControls.handleContextmenu);
 
     this.handleResize();
   }
@@ -47,7 +46,7 @@ class TrackballControls{
     this.screen.height = box.height;
   }
 
-  handleContextmenu(e){
+  static handleContextmenu(e){
     e.preventDefault();
   }
 
