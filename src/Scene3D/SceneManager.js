@@ -1,8 +1,8 @@
 import * as ThreeLib from "three";
-import TrackballControls from "./Controls/TrackballControls";
 import DragControls from "three-dragcontrols";
+import TrackballControls from "./Controls/TrackballControls";
+import MeshSkybox from "./Mesh/Skybox";
 import fontGabriola from "../../Asset/Gabriola_Regular.typeface.json";
-import textureGrass from "../../Asset/texture_grass.jpg";
 
 class SceneManager{
   constructor(canvas){
@@ -18,19 +18,13 @@ class SceneManager{
 
   initThree(){
     const width = this.canvas.offsetWidth, height = this.canvas.offsetHeight;
-    this.camera = new ThreeLib.PerspectiveCamera(45, SceneManager.computeAspectRatio(width, height), 1, 10000);
-    this.camera.position.set(0, 0, 250);
+    this.camera = new ThreeLib.PerspectiveCamera(45, SceneManager.computeAspectRatio(width, height), 1, 100000);
+    this.camera.position.set(0, 0, 1000);
     this.camera.lookAt(new ThreeLib.Vector3(0, 0, 0));
 
     // Create camera control
     this.controls = new TrackballControls(this.camera, this.canvas);
-    this.controls.rotateSpeed = 1.0;
-    this.controls.zoomSpeed = 1.2;
-    this.controls.panSpeed = 0.8;
-    this.controls.noZoom = false;
-    this.controls.noPan = false;
-    this.controls.staticMoving = true;
-    this.controls.dynamicDampingFactor = 0.3;
+    // this.controls = new ThreeLib.OrbitControls(this.camera);
 
     this.scene = new ThreeLib.Scene();
 
@@ -74,21 +68,8 @@ class SceneManager{
     }, (e) => console.log("onProgress", e), (e) => console.log("onError", e));
 
     // Add Floor
-    const loader = new ThreeLib.TextureLoader();
-    loader.load(
-      textureGrass,
-      (texture) => {
-        texture.wrapS = texture.wrapT = ThreeLib.MirroredRepeatWrapping;
-        texture.offset.set(0.5, 0.5);
-        texture.repeat.set(2, 2);
-        const geometryFloor = new ThreeLib.BoxGeometry(10000, 0, 10000);
-        const materialFloor = new ThreeLib.MeshBasicMaterial({map: texture});
-        const meshFloor = new ThreeLib.Mesh(geometryFloor, materialFloor);
-        meshFloor.position.y = -100;
-        this.scene.add(meshFloor);
-      }
-    );
-
+    this.meshSkybox = new MeshSkybox(MeshSkybox.SKYBOX_OCEAN);
+    this.scene.add(this.meshSkybox);
 
     // Add controls
     new DragControls([this.meshCube], this.camera, this.canvas);
