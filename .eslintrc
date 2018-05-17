@@ -61,7 +61,7 @@
     "no-floating-decimal": "error",
     "no-invalid-this": "error",
     "no-loop-func": "error",
-    "no-magic-numbers": ["error", {"ignore": [0, 1, -1]}],
+    "no-magic-numbers": ["error", {"ignore": [0, 0.5, 1, -1, 2]}],
     "no-multi-spaces": ["error", {"ignoreEOLComments": true}],
     "no-self-compare": "error",
     "no-sequences": "error",
