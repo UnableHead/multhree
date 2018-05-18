@@ -1,66 +1,60 @@
 import {Vector2, Vector3, Quaternion} from "three";
+import UtilsControls from "./UtilsControls";
 
 const _ = {
-  e: 0.0001,
   refButton: {left: 0, middle: 1, right: 2},
-  refButtons: {none: 0, left: 1, right: 2, middle: 4}
+  refButtons: {none: 0, left: 1, right: 2, middle: 4},
+  refCursorState: {name: "cursor", auto: "auto", move: "move", zoomIn: "zoom-in"}
 };
 
 class TrackballControls{
 
-  constructor(camera, domElement){
+  constructor(camera, domElement = document){
     this.camera = camera;
-    this.domElement = domElement || document;
+    this.domElement = domElement;
+    this.uc = new UtilsControls(this.domElement);
 
     this.rotateSpeed = 1.0;
-    this.panSpeed = 0.3;
+    this.panSpeed = 2.0;
     this.zoomSpeed = 1.2;
-
-    this.screen = {left: 0, top: 0, width: 0, height: 0};
 
     this.target = new Vector3();
     this.eye = new Vector3();
     this.eye.subVectors(this.camera.position, this.target);
 
-    this.bufferVector = new Vector2();
     this.lastMouseSphere = new Vector2();
     this.lastMouseCoord = new Vector2();
 
-    this.handleResize = this.handleResize.bind(this);
     this.handleMousedown = this.handleMousedown.bind(this);
+    this.handleMouseup = this.handleMouseup.bind(this);
     this.handleMousemove = this.handleMousemove.bind(this);
-    window.addEventListener("resize", this.handleResize);
-    this.domElement.addEventListener("mousedown", this.handleMousedown);
-    this.domElement.addEventListener("mousemove", this.handleMousemove);
-    this.domElement.addEventListener("contextmenu", TrackballControls.handleContextmenu);
 
-    this.handleResize();
-  }
-
-  handleResize(){
-    const box = this.domElement.getBoundingClientRect();
-    const d = this.domElement.ownerDocument.documentElement;
-    this.screen.left = box.left + window.pageXOffset - d.clientLeft;
-    this.screen.top = box.top + window.pageYOffset - d.clientTop;
-    this.screen.width = box.width;
-    this.screen.height = box.height;
-  }
-
-  static handleContextmenu(e){
-    e.preventDefault();
+    this.enable = true;
   }
 
   handleMousedown(e){
+    e.preventDefault();
+    let cursorState = _.refCursorState.auto;
     if(e.button === _.refButton.left){
-      this.lastMouseSphere.copy(this.getMouseOnCircle(e.pageX, e.pageY));
+      cursorState = _.refCursorState.move;
+      this.lastMouseSphere.copy(this.uc.getMouseOnCircle(e.pageX, e.pageY));
     }else if(e.button === _.refButton.right){
-      this.lastMouseCoord.copy(this.getMouseOnScreen(e.pageX, e.pageY));
+      cursorState = _.refCursorState.move;
+      this.lastMouseCoord.copy(this.uc.getMouseOnScreen(e.pageX, e.pageY));
     }else if(e.button === _.refButton.middle){
-      this.lastMouseCoord.copy(this.getMouseOnScreen(e.pageX, e.pageY));
+      cursorState = _.refCursorState.zoomIn;
+      this.lastMouseCoord.copy(this.uc.getMouseOnScreen(e.pageX, e.pageY));
     }
+    this.domElement.setAttribute(_.refCursorState.name, cursorState);
+  }
+
+  handleMouseup(e){
+    e.preventDefault();
+    this.domElement.setAttribute("cursor", "auto");
   }
 
   handleMousemove(e){
+    e.preventDefault();
     if(e.buttons & _.refButtons.left){
       this.rotateCamera(e);
     }else if(e.buttons & _.refButtons.right){
@@ -70,8 +64,20 @@ class TrackballControls{
     }
   }
 
+  set enable(value){
+    if(value){
+      this.domElement.addEventListener("mousedown", this.handleMousedown);
+      this.domElement.addEventListener("mouseup", this.handleMouseup);
+      this.domElement.addEventListener("mousemove", this.handleMousemove);
+    }else{
+      this.domElement.removeEventListener("mousedown", this.handleMousedown);
+      this.domElement.removeEventListener("mouseup", this.handleMouseup);
+      this.domElement.removeEventListener("mousemove", this.handleMousemove);
+    }
+  }
+
   rotateCamera(e){
-    const mouseSphere = this.getMouseOnCircle(e.pageX, e.pageY),
+    const mouseSphere = this.uc.getMouseOnCircle(e.pageX, e.pageY),
           moveDirection = new Vector3(),
           eyeDirection = new Vector3(),
           objectUpDirection = new Vector3(),
@@ -110,7 +116,7 @@ class TrackballControls{
   }
 
   panCamera(e){
-    const mouseCoord = this.getMouseOnScreen(e.pageX, e.pageY),
+    const mouseCoord = this.uc.getMouseOnScreen(e.pageX, e.pageY),
           mouseChange = new Vector2(),
           objectUp = new Vector3(),
           pan = new Vector3();
@@ -128,7 +134,7 @@ class TrackballControls{
   }
 
   zoomCamera(e){
-    const mouseCoord = this.getMouseOnScreen(e.pageX, e.pageY),
+    const mouseCoord = this.uc.getMouseOnScreen(e.pageX, e.pageY),
           factor = 1.0 + (mouseCoord.y - this.lastMouseCoord.y) * this.zoomSpeed;
 
     if(factor !== 1.0 && factor > 0.0){
@@ -138,20 +144,6 @@ class TrackballControls{
     this.camera.position.addVectors(this.target, this.eye);
 
     this.lastMouseCoord.copy(mouseCoord);
-  }
-
-  getMouseOnScreen(pageX, pageY){
-    return this.bufferVector.set(
-      (pageX - this.screen.left) / this.screen.width,
-      (pageY - this.screen.top) / this.screen.height
-    );
-  }
-
-  getMouseOnCircle(pageX, pageY){
-    return this.bufferVector.set(
-      (pageX - this.screen.width * 0.5 - this.screen.left) / (this.screen.width * 0.5),
-      (this.screen.height + 2 * (this.screen.top - pageY)) / this.screen.width
-    );
   }
 
   update(){

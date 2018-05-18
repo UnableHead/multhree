@@ -1,6 +1,7 @@
 import * as ThreeLib from "three";
-import DragControls from "three-dragcontrols";
+// import DragControls from "three-dragcontrols";
 import TrackballControls from "./Controls/TrackballControls";
+import DragControls from "./Controls/DragControls";
 import MeshSkybox from "./Mesh/Skybox";
 import fontGabriola from "../../Asset/Gabriola_Regular.typeface.json";
 
@@ -14,6 +15,12 @@ class SceneManager{
     this.meshCube = null;
     this.animateThree = this.animateThree.bind(this);
     this.initThree();
+
+    this.canvas.addEventListener("contextmenu", SceneManager.handleContextmenu);
+  }
+
+  static handleContextmenu(e){
+    e.preventDefault();
   }
 
   initThree(){
@@ -24,8 +31,8 @@ class SceneManager{
 
     // Create camera control
     this.controls = new TrackballControls(this.camera, this.canvas);
-    // this.controls = new ThreeLib.OrbitControls(this.camera);
 
+    // Create 3D Scene
     this.scene = new ThreeLib.Scene();
 
     // Add cube
@@ -72,7 +79,9 @@ class SceneManager{
     this.scene.add(this.meshSkybox);
 
     // Add controls
-    new DragControls([this.meshCube], this.camera, this.canvas);
+    const dragControls = new DragControls([this.meshCube], this.camera, this.canvas);
+    dragControls.addEventListener("dragstart", () => this.controls.enable = false);
+    dragControls.addEventListener("dragend", () => this.controls.enable = true);
 
 
     this.renderer = new ThreeLib.WebGLRenderer({canvas: this.canvas, antialias: true});
@@ -90,7 +99,7 @@ class SceneManager{
   }
 
   updateGeometry(width, height){
-    this.renderer.setSize(width, height);
+    this.renderer.setSize(width, height, false);
     this.camera.aspect = SceneManager.computeAspectRatio(width, height);
     this.camera.updateProjectionMatrix();
   }

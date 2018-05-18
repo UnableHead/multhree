@@ -7,3 +7,25 @@
     width: 100%;
     height: 100%;
 }
+
+.App-canvas[cursor="auto"]{
+    cursor: auto;
+}
+.App-canvas[cursor="move"]{
+    cursor: move;
+}
+.App-canvas[cursor="zoom-in"]{
+    cursor: zoom-in;
+}
+
+.App-canvas[cursor="grab"]{
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    cursor: grab;
+}
+
+.App-canvas[cursor="grabbing"]{
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+    cursor: grabbing;
+}
