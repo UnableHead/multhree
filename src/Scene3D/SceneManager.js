@@ -1,5 +1,5 @@
 import * as ThreeLib from "three";
-// import DragControls from "three-dragcontrols";
+import SchedulerControls from "./Controls/SchedulerControls";
 import TrackballControls from "./Controls/TrackballControls";
 import DragControls from "./Controls/DragControls";
 import MeshSkybox from "./Mesh/Skybox";
@@ -9,7 +9,6 @@ class SceneManager{
   constructor(canvas){
     this.canvas = canvas;
     this.camera = null;
-    this.controls = null;
     this.scene = null;
     this.renderer = null;
     this.meshCube = null;
@@ -28,9 +27,6 @@ class SceneManager{
     this.camera = new ThreeLib.PerspectiveCamera(45, SceneManager.computeAspectRatio(width, height), 1, 100000);
     this.camera.position.set(0, 0, 1000);
     this.camera.lookAt(new ThreeLib.Vector3(0, 0, 0));
-
-    // Create camera control
-    this.controls = new TrackballControls(this.camera, this.canvas);
 
     // Create 3D Scene
     this.scene = new ThreeLib.Scene();
@@ -80,8 +76,8 @@ class SceneManager{
 
     // Add controls
     const dragControls = new DragControls([this.meshCube], this.camera, this.canvas);
-    dragControls.addEventListener("dragstart", () => this.controls.enable = false);
-    dragControls.addEventListener("dragend", () => this.controls.enable = true);
+    const cameraControls = new TrackballControls(this.camera, this.canvas);
+    new SchedulerControls(this.canvas, [dragControls, cameraControls]);
 
 
     this.renderer = new ThreeLib.WebGLRenderer({canvas: this.canvas, antialias: true});
@@ -94,7 +90,6 @@ class SceneManager{
     requestAnimationFrame(this.animateThree);
     this.meshCube.rotation.x += 0.01;
     this.meshCube.rotation.y += 0.02;
-    this.controls.update();
     this.renderer.render(this.scene, this.camera);
   }
 

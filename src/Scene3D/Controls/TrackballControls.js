@@ -28,12 +28,9 @@ class TrackballControls{
     this.handleMousedown = this.handleMousedown.bind(this);
     this.handleMouseup = this.handleMouseup.bind(this);
     this.handleMousemove = this.handleMousemove.bind(this);
-
-    this.enable = true;
   }
 
   handleMousedown(e){
-    e.preventDefault();
     let cursorState = _.refCursorState.auto;
     if(e.button === _.refButton.left){
       cursorState = _.refCursorState.move;
@@ -46,33 +43,23 @@ class TrackballControls{
       this.lastMouseCoord.copy(this.uc.getMouseOnScreen(e.pageX, e.pageY));
     }
     this.domElement.setAttribute(_.refCursorState.name, cursorState);
+    return cursorState !== _.refCursorState.auto;
   }
 
   handleMouseup(e){
-    e.preventDefault();
     this.domElement.setAttribute("cursor", "auto");
+    return e.button === _.refButton.left
+          || e.button === _.refButton.right
+          || e.button === _.refButton.middle;
   }
 
   handleMousemove(e){
-    e.preventDefault();
     if(e.buttons & _.refButtons.left){
       this.rotateCamera(e);
     }else if(e.buttons & _.refButtons.right){
       this.panCamera(e);
     }else if(e.buttons & _.refButtons.middle){
       this.zoomCamera(e);
-    }
-  }
-
-  set enable(value){
-    if(value){
-      this.domElement.addEventListener("mousedown", this.handleMousedown);
-      this.domElement.addEventListener("mouseup", this.handleMouseup);
-      this.domElement.addEventListener("mousemove", this.handleMousemove);
-    }else{
-      this.domElement.removeEventListener("mousedown", this.handleMousedown);
-      this.domElement.removeEventListener("mouseup", this.handleMouseup);
-      this.domElement.removeEventListener("mousemove", this.handleMousemove);
     }
   }
 
@@ -146,9 +133,6 @@ class TrackballControls{
     this.lastMouseCoord.copy(mouseCoord);
   }
 
-  update(){
-
-  }
 }
 
 export default TrackballControls;

@@ -37,7 +37,6 @@
     "webpack-merge": "^4.1.2"
   },
   "dependencies": {
-    "three": "^0.92.0",
-    "three-dragcontrols": "^0.88.2"
+    "three": "^0.92.0"
   }
 }
