@@ -1,7 +1,8 @@
 import * as ThreeLib from "three";
-import SchedulerControls from "./Controls/SchedulerControls";
-import TrackballControls from "./Controls/TrackballControls";
+import MouseSchedulerControls from "./Controls/MouseSchedulerControls";
+import CameraControls from "./Controls/CameraControls";
 import DragControls from "./Controls/DragControls";
+import KeyboardControls from "./Controls/KeyboardControls";
 import MeshSkybox from "./Mesh/Skybox";
 import fontGabriola from "../../Asset/Gabriola_Regular.typeface.json";
 
@@ -13,6 +14,7 @@ class SceneManager{
     this.renderer = null;
     this.meshCube = null;
     this.animateThree = this.animateThree.bind(this);
+    this.addMeshDrag = this.addMeshDrag.bind(this);
     this.initThree();
 
     this.canvas.addEventListener("contextmenu", SceneManager.handleContextmenu);
@@ -30,6 +32,8 @@ class SceneManager{
 
     // Create 3D Scene
     this.scene = new ThreeLib.Scene();
+    this.groupDrag = new ThreeLib.Group();
+    this.scene.add(this.groupDrag);
 
     // Add cube
     const geometryCube = new ThreeLib.BoxGeometry(20, 20, 20);
@@ -37,7 +41,7 @@ class SceneManager{
     const materialCube = new ThreeLib.MeshNormalMaterial();
     this.meshCube = new ThreeLib.Mesh(geometryCube, materialCube);
     this.meshCube.position.y = -50;
-    this.scene.add(this.meshCube);
+    this.groupDrag.add(this.meshCube);
 
     // Add arrow
     const materialArrow = new ThreeLib.LineBasicMaterial();
@@ -46,7 +50,7 @@ class SceneManager{
     geometryArrow.vertices.push(new ThreeLib.Vector3(0, -20, 0));
     geometryArrow.vertices.push(new ThreeLib.Vector3(100, -80, 0));
     const arrow = new ThreeLib.Line(geometryArrow, materialArrow);
-    this.scene.add(arrow);
+    this.groupDrag.add(arrow);
 
     // Add text
     const fontLoader = new ThreeLib.FontLoader();
@@ -67,17 +71,18 @@ class SceneManager{
       // geometryText.computeVertexNormals();
       const meshText = new ThreeLib.Mesh(geometryText, materialText);
       meshText.position.x = -0.5 * (geometryText.boundingBox.max.x - geometryText.boundingBox.min.x);
-      this.scene.add(meshText);
+      this.groupDrag.add(meshText);
     }, (e) => console.log("onProgress", e), (e) => console.log("onError", e));
 
-    // Add Floor
+    // Add Skybox
     this.meshSkybox = new MeshSkybox(MeshSkybox.SKYBOX_OCEAN);
     this.scene.add(this.meshSkybox);
 
     // Add controls
-    const dragControls = new DragControls([this.meshCube], this.camera, this.canvas);
-    const cameraControls = new TrackballControls(this.camera, this.canvas);
-    new SchedulerControls(this.canvas, [dragControls, cameraControls]);
+    const dragControls = new DragControls(this.groupDrag.children, this.camera, this.canvas);
+    const cameraControls = new CameraControls(this.camera, this.canvas);
+    const keyboardControls = new KeyboardControls(this.addMeshDrag);
+    new MouseSchedulerControls(this.canvas, [dragControls, cameraControls]);
 
 
     this.renderer = new ThreeLib.WebGLRenderer({canvas: this.canvas, antialias: true});
@@ -97,6 +102,10 @@ class SceneManager{
     this.renderer.setSize(width, height, false);
     this.camera.aspect = SceneManager.computeAspectRatio(width, height);
     this.camera.updateProjectionMatrix();
+  }
+
+  addMeshDrag(mesh){
+    this.groupDrag.add(mesh);
   }
 
   static computeAspectRatio(width, height){

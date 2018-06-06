@@ -7,7 +7,7 @@ const _ = {
   refCursorState: {name: "cursor", auto: "auto", move: "move", zoomIn: "zoom-in"}
 };
 
-class TrackballControls{
+class CameraControls{
 
   constructor(camera, domElement = document){
     this.camera = camera;
@@ -135,4 +135,4 @@ class TrackballControls{
 
 }
 
-export default TrackballControls;
+export default CameraControls;
