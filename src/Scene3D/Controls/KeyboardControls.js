@@ -1,10 +1,10 @@
-import {MeshNormalMaterial, Mesh, Vector2, Vector3, Raycaster} from "three";
+import {MeshNormalMaterial, Mesh, Vector2, Raycaster} from "three";
 
 import keyboardMapping from "./KeyboardMapping";
 
 const _ = {
   distanceAddMesh: 1000
-}
+};
 
 class KeyboardControls{
 

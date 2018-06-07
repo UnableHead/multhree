@@ -1,10 +1,5 @@
 import {Vector2} from "three";
 
-const _ = {
-  refButton: {left: 0, middle: 1, right: 2},
-  refButtons: {none: 0, left: 1, right: 2, middle: 4}
-};
-
 class UtilsControls{
 
   constructor(domElement){
