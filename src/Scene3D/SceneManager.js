@@ -1,5 +1,5 @@
 import * as ThreeLib from "three";
-import MouseSchedulerControls from "./Controls/MouseSchedulerControls";
+import SchedulerControls from "./Controls/SchedulerControls";
 import CameraControls from "./Controls/CameraControls";
 import DragControls from "./Controls/DragControls";
 import KeyboardControls from "./Controls/KeyboardControls";
@@ -14,7 +14,6 @@ class SceneManager{
     this.renderer = null;
     this.meshCube = null;
     this.animateThree = this.animateThree.bind(this);
-    this.addMeshDrag = this.addMeshDrag.bind(this);
     this.initThree();
 
     this.canvas.addEventListener("contextmenu", SceneManager.handleContextmenu);
@@ -79,10 +78,7 @@ class SceneManager{
     this.scene.add(this.meshSkybox);
 
     // Add controls
-    const dragControls = new DragControls(this.groupDrag.children, this.camera, this.canvas);
-    const cameraControls = new CameraControls(this.camera, this.canvas);
-    const keyboardControls = new KeyboardControls(this.addMeshDrag);
-    new MouseSchedulerControls(this.canvas, [dragControls, cameraControls]);
+    new SchedulerControls(this.canvas, this.camera, this.groupDrag);
 
 
     this.renderer = new ThreeLib.WebGLRenderer({canvas: this.canvas, antialias: true});
@@ -102,10 +98,6 @@ class SceneManager{
     this.renderer.setSize(width, height, false);
     this.camera.aspect = SceneManager.computeAspectRatio(width, height);
     this.camera.updateProjectionMatrix();
-  }
-
-  addMeshDrag(mesh){
-    this.groupDrag.add(mesh);
   }
 
   static computeAspectRatio(width, height){

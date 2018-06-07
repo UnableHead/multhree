@@ -1,5 +1,4 @@
 import {Raycaster, Plane, Vector3} from "three";
-import UtilsControls from "./UtilsControls";
 
 const _ = {
   refButton: {left: 0, middle: 1, right: 2},
@@ -8,11 +7,11 @@ const _ = {
 
 class DragControls{
 
-  constructor(objects, camera, domElement = document){
+  constructor(objects, camera, uc, domElement = document){
     this.objectsList = objects;
     this.camera = camera;
     this.domElement = domElement;
-    this.uc = new UtilsControls(this.domElement);
+    this.uc = uc;
     this.selected = null;
     this.hovered = null;
 

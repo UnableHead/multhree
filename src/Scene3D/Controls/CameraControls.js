@@ -1,5 +1,4 @@
 import {Vector2, Vector3, Quaternion} from "three";
-import UtilsControls from "./UtilsControls";
 
 const _ = {
   refButton: {left: 0, middle: 1, right: 2},
@@ -9,10 +8,10 @@ const _ = {
 
 class CameraControls{
 
-  constructor(camera, domElement = document){
+  constructor(camera, uc, domElement = document){
     this.camera = camera;
     this.domElement = domElement;
-    this.uc = new UtilsControls(this.domElement);
+    this.uc = uc;
 
     this.rotateSpeed = 1.0;
     this.panSpeed = 2.0;
