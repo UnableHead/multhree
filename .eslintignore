@@ -2,7 +2,8 @@
 # Exclude all except src/ folder
 *
 !*.js
-!src/
+!src-back/
+!src-front/
 
 # Exclude this extension files
 *.test.js

@@ -1,4 +1,5 @@
 import * as ThreeLib from "three";
+import WebsocketManager from "./Socket/WebSocketManager";
 import SchedulerControls from "./Controls/SchedulerControls";
 import MeshSkybox from "./Mesh/Skybox";
 import fontGabriola from "../../Asset/Gabriola_Regular.typeface.json";
@@ -6,6 +7,7 @@ import fontGabriola from "../../Asset/Gabriola_Regular.typeface.json";
 class SceneManager{
   constructor(canvas){
     this.canvas = canvas;
+    this.socket = new WebsocketManager();
     this.camera = null;
     this.scene = null;
     this.renderer = null;

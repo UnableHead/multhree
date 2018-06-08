@@ -4,8 +4,9 @@
   "description": "",
   "private": true,
   "scripts": {
-    "start": "webpack-dev-server --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js",
+    "start-back": "nodemon src-back/index.js",
+    "start-front": "webpack-dev-server --config webpack.dev.js",
+    "build-front": "webpack --config webpack.prod.js",
     "deploy": "serve -s dist"
   },
   "author": {
@@ -37,6 +38,8 @@
     "webpack-merge": "^4.1.2"
   },
   "dependencies": {
+    "express": "^4.16.3",
+    "socket.io": "^2.1.1",
     "three": "^0.92.0"
   }
 }
