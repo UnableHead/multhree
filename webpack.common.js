@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 
 module.exports = {
-  entry: "./src-front/index.js",
+  entry: ["babel-polyfill", "./src-front/index.js"],
   output: {
     filename: "[name].bundle.js",
     path: path.resolve(__dirname, "dist")
@@ -19,7 +19,7 @@ module.exports = {
       exclude: /node_modules/,
       use: {
         loader: "babel-loader",
-        options: {presets: ["react"]}
+        options: {presets: ["react", "env"]}
       }
     }, {
       test: /\.css$/,
