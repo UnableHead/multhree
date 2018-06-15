@@ -5,11 +5,14 @@ import KeyboardControls from "./KeyboardControls";
 
 class SchedulerControls{
 
-  constructor(domElement, camera, groupDrag){
+  constructor(domElement, camera, groupDrag, socket){
     this.onDrag = false;
     this.domElement = domElement;
     const uc = new UtilsControls(this.domElement);
     this.dragControls = new DragControls(groupDrag.children, camera, uc, domElement);
+    this.dragControls.addEventListener("objectMoved", (event) => {
+      socket.handleObjectMoved(event.objectData);
+    });
     this.cameraControls = new CameraControls(camera, uc, domElement);
     this.controlsKeyboard = new KeyboardControls(camera, groupDrag, uc);
 

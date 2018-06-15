@@ -14,11 +14,16 @@ class WebSocketServer extends libIO{
 
   initConnection(socket){
     console.log("Socket ON");
+    socket.on("sendObjectMoved", this.onObjectMoved);
     socket.on("disconnect", this.disconnectConnection);
   }
 
   disconnectConnection(){
     console.log("Socket OFF");
+  }
+
+  onObjectMoved(objectData){
+    this.broadcast.emit("objectMoved", objectData);
   }
 
 }

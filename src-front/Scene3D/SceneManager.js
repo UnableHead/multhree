@@ -7,11 +7,16 @@ import fontGabriola from "../../Asset/Gabriola_Regular.typeface.json";
 class SceneManager{
   constructor(canvas){
     this.canvas = canvas;
-    this.socket = new WebsocketManager();
     this.camera = null;
     this.scene = null;
     this.renderer = null;
     this.meshCube = null;
+
+    this.setObjectPosition = this.setObjectPosition.bind(this);
+
+    this.socket = new WebsocketManager();
+    this.socket.addEventListener("setObjectPosition", this.setObjectPosition);
+
     this.animateThree = this.animateThree.bind(this);
     this.initThree();
 
@@ -77,7 +82,7 @@ class SceneManager{
     this.scene.add(this.meshSkybox);
 
     // Add controls
-    new SchedulerControls(this.canvas, this.camera, this.groupDrag);
+    new SchedulerControls(this.canvas, this.camera, this.groupDrag, this.socket);
 
 
     this.renderer = new ThreeLib.WebGLRenderer({canvas: this.canvas, antialias: true});
@@ -97,6 +102,13 @@ class SceneManager{
     this.renderer.setSize(width, height, false);
     this.camera.aspect = SceneManager.computeAspectRatio(width, height);
     this.camera.updateProjectionMatrix();
+  }
+
+  setObjectPosition(event){
+    const object = this.groupDrag.getObjectById(event.objectData.id);
+    if(object){
+      object.position.set(...event.objectData.position);
+    }
   }
 
   static computeAspectRatio(width, height){

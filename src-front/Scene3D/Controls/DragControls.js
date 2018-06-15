@@ -1,13 +1,14 @@
-import {Raycaster, Plane, Vector3} from "three";
+import {Raycaster, Plane, Vector3, EventDispatcher} from "three";
 
 const _ = {
   refButton: {left: 0, middle: 1, right: 2},
   refCursorState: {name: "cursor", auto: "auto", grab: "grab", grabbing: "grabbing"}
 };
 
-class DragControls{
+class DragControls extends EventDispatcher{
 
   constructor(objects, camera, uc, domElement = document){
+    super();
     this.objectsList = objects;
     this.camera = camera;
     this.domElement = domElement;
@@ -57,6 +58,7 @@ class DragControls{
   moveSelected(pageX, pageY){
     this.raycaster.setFromCamera(this.uc.getMouseOnCircle(pageX, pageY), this.camera);
     this.raycaster.ray.intersectPlane(this.plane, this.selected.position);
+    this.dispatchEvent({type: "objectMoved", objectData: this.selected});
   }
 
   checkMouseHovering(pageX, pageY){
