@@ -1,7 +1,7 @@
 import {BoxGeometry, ConeGeometry, DodecahedronGeometry, IcosahedronGeometry, OctahedronGeometry,
         SphereGeometry, TetrahedronGeometry, TorusGeometry, TextGeometry} from "three";
 
-const keyMapping = [
+const meshMapping = [
   {
     code: 97, // a
     GeometryClass: BoxGeometry,
@@ -69,16 +69,15 @@ const keyMapping = [
             tubularSegments = 15;
       return [radius, tube, radialSegments, tubularSegments];
     }
-  },
-  {
+  }
+  /* {
     code: 111, // o
     GeometryClass: TextGeometry,
     parameter: () => {
-      const radius = 15;
-      return [radius];
+      return ["text", {}];
     }
-  }
-  /* {
+  },
+  {
     code: 112, // p
     GeometryClass: TorusGeometry,
     parameter: () => {
@@ -88,4 +87,4 @@ const keyMapping = [
   }*/
 ];
 
-export default keyMapping;
+export default meshMapping;

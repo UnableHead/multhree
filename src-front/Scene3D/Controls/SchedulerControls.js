@@ -5,15 +5,12 @@ import KeyboardControls from "./KeyboardControls";
 
 class SchedulerControls{
 
-  constructor(domElement, camera, groupDrag, socket){
+  constructor(domElement, camera, groupDrag){
     this.onDrag = false;
     this.domElement = domElement;
     const uc = new UtilsControls(this.domElement);
-    this.dragControls = new DragControls(groupDrag.children, camera, uc, domElement);
-    this.dragControls.addEventListener("objectMoved", (event) => {
-      socket.handleObjectMoved(event.objectData);
-    });
-    this.cameraControls = new CameraControls(camera, uc, domElement);
+    this.controlsDrag = new DragControls(groupDrag.children, camera, uc, domElement);
+    this.controlsCamera = new CameraControls(camera, uc, domElement);
     this.controlsKeyboard = new KeyboardControls(camera, groupDrag, uc);
 
     this.handleMousedown = this.handleMousedown.bind(this);
@@ -26,27 +23,27 @@ class SchedulerControls{
 
   handleMousedown(e){
     e.preventDefault();
-    if(this.dragControls.handleMousedown(e)){
+    if(this.controlsDrag.handleMousedown(e)){
       this.onDrag = true;
     }else{
-      this.cameraControls.handleMousedown(e);
+      this.controlsCamera.handleMousedown(e);
     }
   }
 
   handleMouseup(e){
     e.preventDefault();
-    if(this.dragControls.handleMouseup(e)){
+    if(this.controlsDrag.handleMouseup(e)){
       this.onDrag = false;
     }else{
-      this.cameraControls.handleMouseup(e);
+      this.controlsCamera.handleMouseup(e);
     }
   }
 
   handleMousemove(e){
     e.preventDefault();
-    this.dragControls.handleMousemove(e);
+    this.controlsDrag.handleMousemove(e);
     if(!this.onDrag){
-      this.cameraControls.handleMousemove(e);
+      this.controlsCamera.handleMousemove(e);
     }
     this.controlsKeyboard.handleMousemove(e);
   }

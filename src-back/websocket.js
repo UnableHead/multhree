@@ -1,5 +1,9 @@
-
 const libIO = require("socket.io");
+
+const _ = {
+  meshAdded: {up: "signalMeshAdded", down: "broadcastMeshAdded"},
+  meshMoved: {up: "signalMeshMoved", down: "broadcastMeshMoved"}
+};
 
 class WebSocketServer extends libIO{
 
@@ -7,6 +11,7 @@ class WebSocketServer extends libIO{
     super(serve, {
       serveClient: false
     });
+    this.groupMesh = {};
 
     this.initConnection = this.initConnection.bind(this);
     this.on("connection", this.initConnection);
@@ -14,7 +19,12 @@ class WebSocketServer extends libIO{
 
   initConnection(socket){
     console.log("Socket ON");
-    socket.on("sendObjectMoved", this.onObjectMoved);
+    socket.groupMesh = this.groupMesh;
+    for(const name in this.groupMesh){
+      socket.emit(_.meshAdded.down, {meshData: this.groupMesh[name]});
+    }
+    socket.on(_.meshAdded.up, this.onObjectAdded);
+    socket.on(_.meshMoved.up, this.onObjectMoved);
     socket.on("disconnect", this.disconnectConnection);
   }
 
@@ -22,8 +32,18 @@ class WebSocketServer extends libIO{
     console.log("Socket OFF");
   }
 
-  onObjectMoved(objectData){
-    this.broadcast.emit("objectMoved", objectData);
+  onObjectAdded(data){
+    const meshData = data.meshData;
+    this.groupMesh[meshData.name] = meshData;
+    this.broadcast.emit(_.meshAdded.down, data);
+  }
+
+  onObjectMoved(data){
+    const mesh = this.groupMesh[data.meshData.name];
+    if(typeof mesh !== "undefined"){
+      mesh.position = data.meshData.position;
+    }
+    this.broadcast.emit(_.meshMoved.down, data);
   }
 
 }

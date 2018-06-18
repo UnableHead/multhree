@@ -58,7 +58,7 @@ class DragControls extends EventDispatcher{
   moveSelected(pageX, pageY){
     this.raycaster.setFromCamera(this.uc.getMouseOnCircle(pageX, pageY), this.camera);
     this.raycaster.ray.intersectPlane(this.plane, this.selected.position);
-    this.dispatchEvent({type: "objectMoved", objectData: this.selected});
+    this.dispatchEvent({type: "meshMoved", meshData: this.selected});
   }
 
   checkMouseHovering(pageX, pageY){

@@ -1,6 +1,7 @@
 import * as ThreeLib from "three";
 import WebsocketManager from "./Socket/WebSocketManager";
 import SchedulerControls from "./Controls/SchedulerControls";
+import meshMapping from "./Controls/MeshMapping";
 import MeshSkybox from "./Mesh/Skybox";
 import fontGabriola from "../../Asset/Gabriola_Regular.typeface.json";
 
@@ -12,10 +13,14 @@ class SceneManager{
     this.renderer = null;
     this.meshCube = null;
 
-    this.setObjectPosition = this.setObjectPosition.bind(this);
+    this.signalMeshAdded = this.signalMeshAdded.bind(this);
+    this.slotMeshAdded = this.slotMeshAdded.bind(this);
+    this.signalMeshMoved = this.signalMeshMoved.bind(this);
+    this.slotMeshMoved = this.slotMeshMoved.bind(this);
 
     this.socket = new WebsocketManager();
-    this.socket.addEventListener("setObjectPosition", this.setObjectPosition);
+    this.socket.addEventListener("onMeshAdded", this.slotMeshAdded);
+    this.socket.addEventListener("onMeshMoved", this.slotMeshMoved);
 
     this.animateThree = this.animateThree.bind(this);
     this.initThree();
@@ -44,6 +49,7 @@ class SceneManager{
     const materialCube = new ThreeLib.MeshNormalMaterial();
     this.meshCube = new ThreeLib.Mesh(geometryCube, materialCube);
     this.meshCube.position.y = -50;
+    this.meshCube.name = this.meshCube.id;
     this.groupDrag.add(this.meshCube);
 
     // Add arrow
@@ -53,6 +59,7 @@ class SceneManager{
     geometryArrow.vertices.push(new ThreeLib.Vector3(0, -20, 0));
     geometryArrow.vertices.push(new ThreeLib.Vector3(100, -80, 0));
     const arrow = new ThreeLib.Line(geometryArrow, materialArrow);
+    arrow.name = arrow.id;
     this.groupDrag.add(arrow);
 
     // Add text
@@ -74,6 +81,7 @@ class SceneManager{
       // geometryText.computeVertexNormals();
       const meshText = new ThreeLib.Mesh(geometryText, materialText);
       meshText.position.x = -0.5 * (geometryText.boundingBox.max.x - geometryText.boundingBox.min.x);
+      meshText.name = meshText.id;
       this.groupDrag.add(meshText);
     }, (e) => console.log("onProgress", e), (e) => console.log("onError", e));
 
@@ -82,8 +90,9 @@ class SceneManager{
     this.scene.add(this.meshSkybox);
 
     // Add controls
-    new SchedulerControls(this.canvas, this.camera, this.groupDrag, this.socket);
-
+    const schedulerControls = new SchedulerControls(this.canvas, this.camera, this.groupDrag);
+    schedulerControls.controlsKeyboard.addEventListener("meshAdded", this.signalMeshAdded);
+    schedulerControls.controlsDrag.addEventListener("meshMoved", this.signalMeshMoved);
 
     this.renderer = new ThreeLib.WebGLRenderer({canvas: this.canvas, antialias: true});
     this.renderer.setSize(width, height);
@@ -104,10 +113,41 @@ class SceneManager{
     this.camera.updateProjectionMatrix();
   }
 
-  setObjectPosition(event){
-    const object = this.groupDrag.getObjectById(event.objectData.id);
-    if(object){
-      object.position.set(...event.objectData.position);
+  static createMesh(meshCode){
+    let mesh = null;
+    meshMapping.forEach((item) => {
+      if(meshCode === item.code){
+        const geometry = new item.GeometryClass(...item.parameter());
+        geometry.computeBoundingBox();
+        const material = new ThreeLib.MeshNormalMaterial();
+        mesh = new ThreeLib.Mesh(geometry, material);
+        mesh.typeCode = item.code;
+      }
+    });
+    return mesh;
+  }
+
+  signalMeshAdded(event){
+    this.socket.emitMeshAdded(event.meshData);
+  }
+
+  slotMeshAdded(event){
+    const mesh = SceneManager.createMesh(event.supplyData.meshData.typeCode);
+    if(mesh !== null){
+      mesh.name = event.supplyData.meshData.name;
+      mesh.position.set(...event.supplyData.meshData.position);
+      this.groupDrag.add(mesh);
+    }
+  }
+
+  signalMeshMoved(event){
+    this.socket.emitMeshMoved(event.meshData);
+  }
+
+  slotMeshMoved(event){
+    const mesh = this.groupDrag.getObjectByName(event.supplyData.meshData.name);
+    if(mesh){
+      mesh.position.set(...event.supplyData.meshData.position);
     }
   }
 

@@ -6,6 +6,8 @@ const _ = {
   hostAdress: window.location.href.split("/")[2],
   hostDevPort: 8090,
   msgName: {
+    meshAdded: {up: "signalMeshAdded", down: "broadcastMeshAdded"},
+    meshMoved: {up: "signalMeshMoved", down: "broadcastMeshMoved"}
   }
 };
 
@@ -23,11 +25,13 @@ class WebSocketManager extends EventDispatcher{
     const hostURL = _.hostProtocol + "://" + _.hostAdress;
     this._s = SocketIO.connect(hostURL);
 
-    this.receiveObjectMove = this.receiveObjectMove.bind(this);
+    this.onMeshMoved = this.onMeshMoved.bind(this);
+    this.onMeshAdded = this.onMeshAdded.bind(this);
 
     this._s.on("connect", this.connectionOpen);
     this._s.on("disconnect", this.connectionClose);
-    this._s.on("objectMoved", this.receiveObjectMove);
+    this._s.on(_.msgName.meshAdded.down, this.onMeshAdded);
+    this._s.on(_.msgName.meshMoved.down, this.onMeshMoved);
   }
 
   connectionOpen(){
@@ -38,13 +42,32 @@ class WebSocketManager extends EventDispatcher{
     console.info("[WebSocketManager] WS Disconnected");
   }
 
-  handleObjectMoved(objectData){
-    const position = objectData.position;
-    this._s.emit("sendObjectMoved", {id: objectData.id, position: [position.x, position.y, position.z]});
+  emitMeshAdded(mesh){
+    mesh.name = this._s.id + "_" + mesh.id;
+    const position = mesh.position;
+    const sendData = {meshData: {
+      name: mesh.name,
+      position: [position.x, position.y, position.z],
+      typeCode: mesh.typeCode
+    }};
+    this._s.emit(_.msgName.meshAdded.up, sendData);
   }
 
-  receiveObjectMove(objectData){
-    this.dispatchEvent({type: "setObjectPosition", objectData: objectData});
+  onMeshAdded(supplyData){
+    this.dispatchEvent({type: "onMeshAdded", supplyData: supplyData});
+  }
+
+  emitMeshMoved(meshData){
+    const position = meshData.position;
+    const sendData = {meshData: {
+      name: meshData.name,
+      position: [position.x, position.y, position.z]
+    }};
+    this._s.emit(_.msgName.meshMoved.up, sendData);
+  }
+
+  onMeshMoved(supplyData){
+    this.dispatchEvent({type: "onMeshMoved", supplyData: supplyData});
   }
 
 }

@@ -1,14 +1,14 @@
-import {MeshNormalMaterial, Mesh, Vector2, Raycaster} from "three";
-
-import keyboardMapping from "./KeyboardMapping";
+import {Vector2, Raycaster, EventDispatcher} from "three";
+import SceneManager from "../SceneManager";
 
 const _ = {
   distanceAddMesh: 1000
 };
 
-class KeyboardControls{
+class KeyboardControls extends EventDispatcher{
 
   constructor(camera, groupDrag, uc){
+    super();
     this.camera = camera;
     this.groupDrag = groupDrag;
     this.mouseCoord = new Vector2();
@@ -19,16 +19,12 @@ class KeyboardControls{
   }
 
   handleKeypress(e){
-    keyboardMapping.forEach((item) => {
-      if(e.charCode === item.code){
-        const geometry = new item.GeometryClass(...item.parameter());
-        geometry.computeBoundingBox();
-        const material = new MeshNormalMaterial();
-        const meshCube = new Mesh(geometry, material);
-        this.castMeshPosition(meshCube.position, meshCube.rotation);
-        this.groupDrag.add(meshCube);
-      }
-    });
+    const mesh = SceneManager.createMesh(e.charCode);
+    if(mesh !== null){
+      this.castMeshPosition(mesh.position, mesh.rotation);
+      this.groupDrag.add(mesh);
+      this.dispatchEvent({type: "meshAdded", meshData: mesh});
+    }
   }
 
   castMeshPosition(position, rotation){
